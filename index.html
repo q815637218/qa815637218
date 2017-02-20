@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>数字小游戏</title>
+    <style>
+        #tishi{
+            position: absolute;
+            left:37%;
+            top:0;
+        }
+        ul{
+            position: absolute;
+            top:0;
+            left: 45%;
+            margin-top: 0px;
+        }
+        li{
+            display: none;
+            height: 20px;
+            width: 50px;
+            text-align: center;
+            border: 1px solid black;
+            cursor: pointer;
+        }
+        input{
+            position: absolute;
+            left:53%;
+            top:0;
+        }
+        #bigbox{
+            position: absolute;
+            top:30%;
+            left:50%;
+        }
+        #gameNum{
+            position: absolute;
+            top:10%;
+            left:46%;
+        }
+        .gameQu{
+            width: 48px;
+            height: 48px;
+            position: absolute;
+            text-align: center;
+            line-height: 50px;
+            background: orange;
+            border: 1px solid black;
+            color: white;
+            font-size: 20px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+<div id="tishi">Pick Diemension:</div>
+<ul>
+    <li style="display: block">3x3</li>
+    <li class="li1">3x3</li>
+    <li class="li1">4x4</li>
+    <li class="li1">5x5</li>
+    <li class="li1">6x6</li>
+    <li class="li1">7x7</li>
+</ul>
+<input type="submit" value="Start Game!" id="start">
+<div id="gameNum" style="display: none"></div>
+<div id="bigbox"></div>
+
+</body>
+<script src="jquery-2.0.3.js"></script>
+<script>
+    var tishiNum=0;
+    $("li:first").click(function () {
+        $("li").css("display","block");
+    });
+    $(".li1").click(function () {
+        var a=$(this).html();
+        $("li").css("display","none");
+        $("li:first").html(a).css("display","block");
+    })
+    $("#start").click(function () {
+        var sum=$("li:first").html();
+        sum=parseInt(sum);
+        var str="";
+        var arr1=createArr(sum,sum);
+        var gameNum=0;
+        for (var i=0;i<sum;i++){
+            for(var j=0;j<sum;j++){
+               str+="<div class='gameQu'   style='left:"+50*j+"px;top: "+50*i+"px;'>"+arr1[i][j]+"</div>"
+            }
+        };
+        $("#bigbox").html(str).css("margin-left","-"+sum*25+"px");
+        createGameNum(arr1,sum);
+        $(".gameQu").click(function () {
+            if ($(this).css("backgroundColor")=="rgb(255, 165, 0)") {
+                if ($(this).html() == tishiNum) {
+                    $(this).css("background", "#eeeeee");
+                    intTishiNum(this, arr1);
+                    createGameNum(arr1, sum);
+                } else {
+                    $(this).addClass("red");
+                    $(this).css("background", "red");
+                    intTishiNum(this,arr1);
+                    gameNum +=parseInt( $(this).html());
+                    if (gameNum == tishiNum) {
+                        createGameNum(arr1, sum);
+                        $(".red").css("background","#eeeeee")
+                        gameNum=0;
+                    }
+                }
+            }
+        })
+    })
+
+
+    function intTishiNum(t,arr1) {
+        var x = parseInt($(t).css("top")) / 50;
+        var y = parseInt($(t).css("left")) / 50;
+       arr1[x][y]=0;
+    }
+    function createArr (x,y) {
+        var Arr1=[];
+        for (var i=0;i<x;i++){
+            Arr1[i]=[];
+            for(var j=0;j<y;j++){
+                Arr1[i][j]=parseInt(Math.random()*15+1);
+            }
+        }
+        return Arr1;
+    }
+    function createGameNum (arr1) {
+        var num=0;
+        var str="Next Total:";
+        var jishinum=0;
+        var sum1=0;
+        var arr=[];
+        var gameover=0;
+        for(var j=0;j<arr1.length;j++){
+            for (var k=0;k<arr1[j].length;k++){
+                if (arr1[j][k]!=0){
+                    jishinum++;
+                }else {
+                    gameover++;
+                }
+            }
+        }
+        //console.log(arr1);
+        if (gameover==arr1.length*arr1.length){
+            $("#gameNum").html("Next Total:Thinks for Playing!!") ;
+            $("#gameNum").css("margin-left","-20px");
+            //alert(111);
+            return;
+        }
+        if (jishinum>4){
+            num=parseInt(Math.random()*4+1);
+        }else {
+            num=parseInt(Math.random()*jishinum+1);
+        }
+       //console.log(arr);
+        for(var i=0;i<num;){
+            var x=parseInt(Math.random()*arr1.length);
+            var y=parseInt(Math.random()*arr1[x].length);
+            var z=[x,y];
+            if(arr.indexOf(z)&&arr1[x][y]!=0){
+                sum1+=arr1[x][y];
+                arr.push([x,y]);
+                i++;
+            }
+        }
+        tishiNum=sum1;
+        str+=tishiNum;
+        $("#gameNum").html( str).css("display","block");
+    }
+</script>
+</html>
